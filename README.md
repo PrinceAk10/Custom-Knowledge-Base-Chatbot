@@ -15,7 +15,7 @@ You must have Python 3.10 or later installed. Earlier versions of python may not
 
 1. Fork this repository (optional) and clone it locally.
    ```
-   git clone https://github.com/sudarshan-koirala/langchain-groq-chainlit.git
+   git clone git@github.com:PrinceAk10/Custom-Knowledge-Base-Chatbot.git
    cd langchain-groq-chainlit
    ```
 
