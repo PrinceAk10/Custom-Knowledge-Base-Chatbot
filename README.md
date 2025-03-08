@@ -1,4 +1,4 @@
-# langchain-groq-chainlit
+# Custom Knowledge Base Chatbot
 Simple Chat UI using Large Language Model Groq, LangChain and Chainlit
 
 ### Tech stack being used
