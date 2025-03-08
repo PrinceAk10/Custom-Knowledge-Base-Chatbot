@@ -42,6 +42,3 @@ You must have Python 3.10 or later installed. Earlier versions of python may not
    ```
    chainlit run langchain_groq_chainlit.py
    ```
-
-## Disclaimer
-This is test project and is presented in my youtube video to learn new stuffs. It is not meant to be used in production as it's not production ready. You can modify the code and use for your usecases ✌️
