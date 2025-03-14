@@ -42,3 +42,9 @@ You must have Python 3.10 or later installed. Earlier versions of python may not
    ```
    chainlit run langchain_groq_chainlit.py
    ```
+# OUTPUT
+
+![Screenshot 2025-03-14 205857](https://github.com/user-attachments/assets/e64815ff-acfc-4913-aa7a-dd7df1bbb205)
+
+![Screenshot 2025-03-14 205830](https://github.com/user-attachments/assets/fa3ffa79-d5bc-4e75-a575-cbe7e83d5996)
+
