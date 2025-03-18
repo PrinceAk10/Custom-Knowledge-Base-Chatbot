@@ -44,10 +44,10 @@ You must have Python 3.10 or later installed. Earlier versions of python may not
    ```
 # Collaborator
 
-AKSHAY ABHAY KULLU [Team Leader]
+AKSHAY ABHAY KULLU [Team Lead]
 
-JOHN CHRISTOFER
-SAM THANGA DANIEL
+JOHN CHRISTOFER\
+SAM THANGA DANIEL\
 MARIYA VISWA
 
 # OUTPUT
