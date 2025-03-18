@@ -42,6 +42,14 @@ You must have Python 3.10 or later installed. Earlier versions of python may not
    ```
    chainlit run langchain_groq_chainlit.py
    ```
+# Collaborator
+
+AKSHAY ABHAY KULLU - PRK23AD1006 [Team Leader]
+
+JOHN CHRISTOFER
+SAM THANGA DANIEL
+MARIYA VISWA
+
 # OUTPUT
 
 ![Screenshot 2025-03-14 205857](https://github.com/user-attachments/assets/e64815ff-acfc-4913-aa7a-dd7df1bbb205)
