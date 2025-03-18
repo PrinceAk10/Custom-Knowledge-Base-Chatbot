@@ -44,7 +44,7 @@ You must have Python 3.10 or later installed. Earlier versions of python may not
    ```
 # Collaborator
 
-AKSHAY ABHAY KULLU - PRK23AD1006 [Team Leader]
+AKSHAY ABHAY KULLU [Team Leader]
 
 JOHN CHRISTOFER
 SAM THANGA DANIEL
