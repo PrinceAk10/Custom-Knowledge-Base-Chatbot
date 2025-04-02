@@ -10,33 +10,47 @@ and Large Language Models (LLMs) to provide relevant and context-aware responses
 # Key Features
 Document Upload & Processing – Users can upload PDFs, TXT, or DOCX files, and
 the chatbot extracts key information.
+
 LLM-Powered Responses – Uses OpenAI’s GPT-3.5/4 or Hugging Face models for
 accurate answers.
+
 Text Chunking & Embeddings – Converts large documents into searchable vector
 representations using OpenAI or Hugging Face embeddings.
+
 Interactive Web UI – Built with Streamlit for easy user interaction.
+
 Scalability & Flexibility – Can integrate with other vector stores, APIs, and local
 LLMs for more control.
  
 # Technologies Used
  LangChain – Framework to integrate LLMs with memory and vector search.
+ 
  LLMs (GPT-3.5-Turbo/GPT-4, Hugging Face Models) – Generates intelligent
  responses.
+ 
  OpenAI Embeddings / Hugging Face Transformers – Converts text into vector
  representations.
- Streamlit – User-friendly web interface for chatbot interaction.
+ 
+ Chainlit – User-friendly web interface for chatbot interaction.
+ 
  Python – Data processing and document handling.
- Outcome
+ 
+ # Outcome
  The chatbot allows users to upload documents and query them dynamically, offering
  fast and relevant answers. It is useful for:
+ 
 • Corporate Knowledge Management – Automating document search for
   businesses.
+  
 • Education & Research – Summarizing and explaining academic papers.
 
   # Future Enhancements
   Real-time document updates – Update knowledge base dynamically.
+  
   Multi-language support – Translate and process content in various languages.
+  
   Voice Input/Output – Enable speech-based queries.
+  
   Offline Mode – Run chatbot locally without an internet connection.
 
 ### Tech stack being used
