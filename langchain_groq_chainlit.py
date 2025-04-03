@@ -7,6 +7,25 @@ from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 import chainlit as cl
+from transformers import pipeline # text genration for auto completion
+ # speech to text
+
+# load the text_genration model
+# for auto completion
+
+text_generator = pipeline("text-generation", model="gpt2")
+
+def generate_auto_completion(prompt: str) -> str:
+    """Generates auto-completion for the given prompt."""
+    try:
+        # Generate text based on the user's input
+        completion = text_generator(prompt, max_length=50, num_return_sequences=1)[0]['generated_text']
+        return completion
+    except Exception as e:
+        return f"Error generating auto-completion: {e}"
+    
+
+
 
 @cl.on_chat_start
 async def on_chat_start():
@@ -31,14 +50,25 @@ async def on_message(message: cl.Message):
 
     user_query = message.content
     file_text = ""
-    
+
+
+
+
+# procees the file which is uploaded  by user
     if message.elements:
         for element in message.elements:
             if isinstance(element, cl.File):
                 file_text = await process_file(element.path)
     
     combined_input = f"User Query: {user_query}\n\nFile Content:\n{file_text}" if file_text else user_query
-    
+
+# auto completion for user query
+if user_query:
+    auto_completion= generate_auto_completion(user_query)
+    await cl.message(content=f"auto-completion:{auto_completion}").send() 
+
+# streaing the chatbot response 
+
     async for chunk in runnable.astream(
         {"question": combined_input},
         config=RunnableConfig(callbacks=[cl.LangchainCallbackHandler()]),
