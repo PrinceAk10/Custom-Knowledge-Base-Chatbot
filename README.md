@@ -1,110 +1,68 @@
-# Custom Knowledge Base Chatbot
-Simple Chat UI using Large Language Model Groq, LangChain and Chainlit
+Custom Knowledge Base Chatbot
 
-# OBJECTIVE OF THE PROJECT
+🚀 Project Objective
 
-The goal of this project is to create an AI-powered chatbot that can answer user
-queries based on uploaded documents (PDFs, text files, etc.). It utilizes LangChain
-and Large Language Models (LLMs) to provide relevant and context-aware responses.
+The Custom Knowledge Base Chatbot is an AI-powered chatbot that enables users to query uploaded documents (PDFs, text files, DOCX) dynamically. By leveraging LangChain and Large Language Models (LLMs), it provides context-aware and relevant responses based on document contents.
 
-# Key Features
-Document Upload & Processing – Users can upload PDFs, TXT, or DOCX files, and
-the chatbot extracts key information.
+🏆 Key Features
 
-LLM-Powered Responses – Uses OpenAI’s GPT-3.5/4 or Hugging Face models for
-accurate answers.
+✅ Document Upload & Processing – Users can upload PDFs, TXT, or DOCX files, and the chatbot extracts key information for querying.✅ LLM-Powered Responses – Utilizes GPT-3.5/4 (Groq) and Hugging Face models for intelligent answers.✅ Text Chunking & Embeddings – Converts large documents into searchable vector representations using OpenAI or Hugging Face embeddings.✅ Interactive Web UI – Built with Chainlit, providing a user-friendly interface.✅ Scalability & Flexibility – Can integrate with other vector stores, APIs, and local LLMs for better control.
 
-Text Chunking & Embeddings – Converts large documents into searchable vector
-representations using OpenAI or Hugging Face embeddings.
+🛠 Technologies Used
 
-Interactive Web UI – Built with Streamlit for easy user interaction.
+🔹 LangChain – Framework for integrating LLMs with memory and vector search.🔹 LLMs (GPT-3.5-Turbo/GPT-4, Hugging Face Models) – To generate intelligent responses.🔹 OpenAI Embeddings / Hugging Face Transformers – Converts text into vector representations for semantic search.🔹 Chainlit – User-friendly web interface for chatbot interaction.🔹 Python – Core programming language for data processing and document handling.
 
-Scalability & Flexibility – Can integrate with other vector stores, APIs, and local
-LLMs for more control.
- 
-# Technologies Used
- LangChain – Framework to integrate LLMs with memory and vector search.
- 
- LLMs (GPT-3.5-Turbo/GPT-4, Hugging Face Models) – Generates intelligent
- responses.
- 
- OpenAI Embeddings / Hugging Face Transformers – Converts text into vector
- representations.
- 
- Chainlit – User-friendly web interface for chatbot interaction.
- 
- Python – Data processing and document handling.
- 
- # Outcome
- The chatbot allows users to upload documents and query them dynamically, offering
- fast and relevant answers. It is useful for:
- 
-• Corporate Knowledge Management – Automating document search for
-  businesses.
-  
-• Education & Research – Summarizing and explaining academic papers.
+🎯 Use Cases
 
-  # Future Enhancements
-  Real-time document updates – Update knowledge base dynamically.
-  
-  Multi-language support – Translate and process content in various languages.
-  
-  Voice Input/Output – Enable speech-based queries.
-  
-  Offline Mode – Run chatbot locally without an internet connection.
+🔹 Corporate Knowledge Management – Automates document search for businesses.🔹 Education & Research – Summarizes and explains academic papers efficiently.🔹 Customer Support – Enables instant, knowledge-driven support.
 
-### Tech stack being used
-- LLMs from [Groq](https://groq.com/) website.
-- [LangChain](https://www.langchain.com/) as a Framework for LLM
-- [LangSmith](https://smith.langchain.com/) for developing, collaborating, testing, deploying, and monitoring LLM applications.
-- [Chainlit](https://docs.chainlit.io/langchain) for deploying.
+📌 Future Enhancements
 
-## System Requirements
+✅ Real-time Document Updates – Dynamically update the knowledge base.✅ Multi-language Support – Translate and process documents in various languages.✅ Voice Input/Output – Enable speech-based queries and responses.✅ Offline Mode – Run chatbot locally without an internet connection.
 
-You must have Python 3.10 or later installed. Earlier versions of python may not compile.
+⚡ Tech Stack
 
-## Steps to Replicate 
+🟢 LLMs from Groq🟢 LangChain – As a Framework for LLM🟢 LangSmith – For developing, testing, and monitoring LLM applications🟢 Chainlit – For seamless deployment🟢 Python 3.10+ – Ensure compatibility for proper execution
 
-1. Fork this repository (optional) and clone it locally.
-   ```
-   git clone git@github.com:PrinceAk10/Custom-Knowledge-Base-Chatbot.git
-   cd langchain-groq-chainlit
-   ```
+🛠 System Requirements
 
-2. Create a virtualenv and activate it.
-   ```
-   python3 -m venv .venv && source .venv/bin/activate
-   ```
+🔹 Python 3.10+ (Older versions may not compile)🔹 Git – For cloning the repository
 
-3. OPTIONAL - Rename example.env to .env with `cp example.env .env`and input the environment variables from [LangSmith](https://smith.langchain.com/). You need to create an account in LangSmith website if you haven't already. Also, you need to get api key for groq from this [link](https://console.groq.com/keys).
-   ``` 
-   LANGCHAIN_TRACING_V2=true
-   LANGCHAIN_ENDPOINT="https://api.smith.langchain.com"
-   LANGCHAIN_API_KEY="your-api-key"
-   LANGCHAIN_PROJECT="your-project"
-   GROQ_API_KEY="YOUR_GROQ_API_KEY"
-   ```
+⚙️ Steps to Replicate
 
-4. Run the following command in the terminal to install necessary python packages:
-   ```
-   pip install -r requirements.txt
-   ```
+1️⃣ Clone the Repository
 
-5. Run the following command in your terminal to start the chat UI:
-   ```
-   chainlit run langchain_groq_chainlit.py
-   ```
-# Collaborator
+git clone git@github.com:PrinceAk10/Custom-Knowledge-Base-Chatbot.git
+cd langchain-groq-chainlit
 
-AKSHAY ABHAY KULLU [Team Lead]
+2️⃣ Create a Virtual Environment & Activate It
 
-JOHN CHRISTOFER\
-SAM THANGA DANIEL\
-MARIYA VISWA
+python3 -m venv .venv && source .venv/bin/activate
 
-# OUTPUT
+3️⃣ Set Up Environment Variables (Optional but Recommended)
 
-![Screenshot 2025-03-14 205857](https://github.com/user-attachments/assets/e64815ff-acfc-4913-aa7a-dd7df1bbb205)
+Rename example.env to .env and configure it with your LangSmith API Key and Groq API Key.
 
-![Screenshot 2025-03-14 205830](https://github.com/user-attachments/assets/fa3ffa79-d5bc-4e75-a575-cbe7e83d5996)
+cp example.env .env
 
+🔹 Create an account on LangSmith and obtain API keys.🔹 Get your Groq API Key from Groq's API Key Page.
+
+Add the following details in your .env file:
+
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_ENDPOINT="https://api.smith.langchain.com"
+LANGCHAIN_API_KEY="your-api-key"
+LANGCHAIN_PROJECT="your-project"
+GROQ_API_KEY="YOUR_GROQ_API_KEY"
+
+4️⃣ Install Dependencies
+
+pip install -r requirements.txt
+
+5️⃣ Run the Chatbot UI
+
+chainlit run langchain_groq_chainlit.py
+
+👥 Collaborators
+
+👨‍💻 Akshay Abhay Kullu – Team Lead👨‍💻 John Christofer Sam👨‍💻 Thanga Daniel👨‍💻 Mariya Viswa
