@@ -50,9 +50,13 @@ cp example.env .env
 ## Add the following details in your .env file:
 
 LANGCHAIN_TRACING_V2=true
+
 LANGCHAIN_ENDPOINT="https://api.smith.langchain.com"
+
 LANGCHAIN_API_KEY="your-api-key"
+
 LANGCHAIN_PROJECT="your-project"
+
 GROQ_API_KEY="YOUR_GROQ_API_KEY"
 
 ## 4️⃣ Install Dependencies
