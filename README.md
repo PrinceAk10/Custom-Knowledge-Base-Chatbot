@@ -69,4 +69,10 @@ chainlit run langchain_groq_chainlit.py
 
 ## 👥 Collaborators
 
-👨‍💻 Akshay Abhay Kullu – Team Lead👨‍💻 John Christofer Sam👨‍💻 Thanga Daniel👨‍💻 Mariya Viswa
+👨‍💻 Akshay Abhay Kullu – Team Lead
+
+👨‍💻 John Christofer
+
+👨‍💻 Sam Thanga Daniel
+
+👨‍💻 Mariya Viswa
