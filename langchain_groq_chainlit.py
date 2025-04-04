@@ -8,7 +8,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 import chainlit as cl
 from transformers import pipeline # text genration for auto completion
- # speech to text
+import speech_recognition as sr
 
 # load the text_genration model
 # for auto completion
@@ -23,6 +23,25 @@ def generate_auto_completion(prompt: str) -> str:
         return completion
     except Exception as e:
         return f"Error generating auto-completion: {e}"
+    
+# speech recognition for user input
+    
+async def process_voice_input():
+    """Handles voice input from the user."""
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        try:
+            await cl.Message(content="Listening...").send()
+            audio = r.listen(source)
+            user_query = r.recognize_google(audio)
+            await cl.Message(content=f"You said: {user_query}").send()
+
+            # Process the voice input as a normal query
+            await on_message(cl.Message(content=user_query))
+        except sr.UnknownValueError:
+            await cl.Message(content="Sorry, I could not understand your speech. Please try again.").send()
+        except sr.RequestError:
+            await cl.Message(content="There was an issue with the speech recognition service. Please try again later.").send()
     
 
 
@@ -51,6 +70,10 @@ async def on_message(message: cl.Message):
     user_query = message.content
     file_text = ""
 
+# speech recognition if user want to record the audio
+ if user_query.lower() == "record voice":
+        await process_voice_input()
+        return
 
 
 
