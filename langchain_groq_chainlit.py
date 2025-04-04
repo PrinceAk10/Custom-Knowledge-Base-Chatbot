@@ -69,10 +69,31 @@ async def process_word(file_path: str) -> str:
     except Exception as e:
         return f"Error processing Word file: {e}"
 
-    
+# func to process files based on their extensions
+
+async def process_file(file_path: str) -> str:
+    """Processes an uploaded file and extracts its content."""
+    file_extension = os.path.splitext(file_path)[1].lower()
+
+    if file_extension == ".pdf":
+        loader = PyPDFLoader(file_path)
+        pages = loader.load()
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        docs = text_splitter.split_documents(pages)
+        return "\n\n".join([doc.page_content for doc in docs])
+    elif file_extension == ".csv":
+        return await process_csv(file_path)
+    elif file_extension in [".xls", ".xlsx"]:
+        return await process_excel(file_path)
+    elif file_extension in [".doc", ".docx"]:
+        return await process_word(file_path)
+    else:
+        return "Unsupported file type. Please upload a PDF, CSV, Excel, or Word file." 
+
+
 # speech recognition for user input
-    
-async def process_voice_input():
+
+    async def process_voice_input():
     """Handles voice input from the user."""
     r = sr.Recognizer()
     with sr.Microphone() as source:
