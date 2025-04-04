@@ -57,17 +57,39 @@ async def process_excel(file_path: str) -> str:
         return df.to_string(index=False)  # Convert the DataFrame to a string
     except Exception as e:
         return f"Error processing Excel file: {e}"
-
+    
 # func to process file (word)
-
 async def process_word(file_path: str) -> str:
     """Processes a Word document and extracts its content."""
     try:
         doc = Document(file_path)
-        content = "\n".join([paragraph.text for paragraph in doc.paragraphs])
-        return content
+        if not doc.paragraphs:
+            return "The Word document is empty."
+        content = "\n".join([paragraph.text for paragraph in doc.paragraphs if paragraph.text.strip()])
+        return content if content else "The Word document contains no readable text."
     except Exception as e:
         return f"Error processing Word file: {e}"
+
+# func to process file based on the extension
+
+async def process_file(file_path: str) -> str:
+    """Processes an uploaded file and extracts its content."""
+    file_extension = os.path.splitext(file_path)[1].lower()
+
+    if file_extension == ".pdf":
+        loader = PyPDFLoader(file_path)
+        pages = loader.load()
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        docs = text_splitter.split_documents(pages)
+        return "\n\n".join([doc.page_content for doc in docs])
+    elif file_extension == ".csv":
+        return await process_csv(file_path)
+    elif file_extension in [".xls", ".xlsx"]:
+        return await process_excel(file_path)
+    elif file_extension in [".doc", ".docx"]:
+        return await process_word(file_path)
+    else:
+        return "Unsupported file type. Please upload a PDF, CSV, Excel, or Word (.docx) file."
 
     
 # speech recognition for user input
@@ -75,8 +97,8 @@ async def process_word(file_path: str) -> str:
 async def process_voice_input():
     """Handles voice input from the user."""
     r = sr.Recognizer()
-    with sr.Microphone() as source:
-        try:
+    try:
+        with sr.Microphone() as source:
             await cl.Message(content="Listening...").send()
             audio = r.listen(source)
             user_query = r.recognize_google(audio)
@@ -84,10 +106,12 @@ async def process_voice_input():
 
             # Process the voice input as a normal query
             await on_message(cl.Message(content=user_query))
-        except sr.UnknownValueError:
+    except sr.UnknownValueError:
             await cl.Message(content="Sorry, I could not understand your speech. Please try again.").send()
-        except sr.RequestError:
+    except sr.RequestError:
             await cl.Message(content="There was an issue with the speech recognition service. Please try again later.").send()
+    except Exception as e:
+         await cl.message (content=f"error occured while processing for voice input:{e}").send()        
     
 
 
@@ -110,14 +134,13 @@ async def on_chat_start():
 
 @cl.on_message
 async def on_message(message: cl.Message):
-    runnable = cl.user_session.get("runnable")  # type: Runnable
+    user_query = message.content
     msg = cl.Message(content="")
 
-    user_query = message.content
-    file_text = ""
+   
 
 # speech recognition if user want to record the audio
- if user_query.lower() == "record voice":
+    if user_query.lower() == "record voice":
         await process_voice_input()
         return
 
