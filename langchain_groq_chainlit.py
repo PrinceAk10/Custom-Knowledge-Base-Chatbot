@@ -49,7 +49,14 @@ async def process_csv(file_path: str) -> str:
     except Exception as e:
         return f"Error processing CSV file: {e}"
 
-
+# func to process file (excel)
+async def process_excel(file_path: str) -> str:
+    """Processes an Excel file and extracts its content."""
+    try:
+        df = pd.read_excel(file_path)
+        return df.to_string(index=False)  # Convert the DataFrame to a string
+    except Exception as e:
+        return f"Error processing Excel file: {e}"
 
     
 # speech recognition for user input
