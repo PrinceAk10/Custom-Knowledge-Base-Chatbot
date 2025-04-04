@@ -23,6 +23,18 @@ def generate_auto_completion(prompt: str) -> str:
         return completion
     except Exception as e:
         return f"Error generating auto-completion: {e}"
+
+# load the emotion detection model
+emotion_detector=pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", return_all_scores=True)
+def analyse_emotion(text:str)-> tuple:
+      """Analyzes the emotion of the given text."""
+    try:
+        emotions = emotion_detector(text)[0]  # Get emotion scores
+        # Find the emotion with the highest score
+        dominant_emotion = max(emotions, key=lambda x: x['score'])
+        return dominant_emotion['label'], dominant_emotion['score']
+    except Exception as e:
+        return "neutral", 0.0  # Default to neutral if there's an error
     
 # speech recognition for user input
     
@@ -89,6 +101,11 @@ async def on_message(message: cl.Message):
 if user_query:
     auto_completion= generate_auto_completion(user_query)
     await cl.message(content=f"auto-completion:{auto_completion}").send() 
+
+# emotion detection for user query
+if user_query:
+    emotion,emotion_score=analyse_emotion(user_query)
+    await cl.message(content=f"Emotion:{emotion}(Score:{emotion_score:.2f})").send()
 
 # streaing the chatbot response 
 
