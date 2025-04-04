@@ -18,7 +18,15 @@ The Custom Knowledge Base Chatbot is an AI-powered chatbot that enables users to
 
 ## 🛠 Technologies Used
 
-🔹 LangChain – Framework for integrating LLMs with memory and vector search.🔹 LLMs (GPT-3.5-Turbo/GPT-4, Hugging Face Models) – To generate intelligent responses.🔹 OpenAI Embeddings / Hugging Face Transformers – Converts text into vector representations for semantic search.🔹 Chainlit – User-friendly web interface for chatbot interaction.🔹 Python – Core programming language for data processing and document handling.
+🔹 LangChain – Framework for integrating LLMs with memory and vector search.
+
+🔹 LLMs (GPT-3.5-Turbo/GPT-4, Hugging Face Models) – To generate intelligent responses.
+
+🔹 OpenAI Embeddings / Hugging Face Transformers – Converts text into vector representations for semantic search.
+
+🔹 Chainlit – User-friendly web interface for chatbot interaction.
+
+🔹 Python – Core programming language for data processing and document handling.
 
 ## 🎯 Use Cases
 
