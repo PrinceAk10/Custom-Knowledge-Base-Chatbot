@@ -7,9 +7,13 @@ The Custom Knowledge Base Chatbot is an AI-powered chatbot that enables users to
 ## 🏆 Key Features
 
 ✅ Document Upload & Processing – Users can upload PDFs, TXT, or DOCX files, and the chatbot extracts key information for querying.
+
 ✅ LLM-Powered Responses – Utilizes GPT-3.5/4 (Groq) and Hugging Face models for intelligent answers.
+
 ✅ Text Chunking & Embeddings – Converts large documents into searchable vector representations using OpenAI or Hugging Face embeddings.
+
 ✅ Interactive Web UI – Built with Chainlit, providing a user-friendly interface.
+
 ✅ Scalability & Flexibility – Can integrate with other vector stores, APIs, and local LLMs for better control.
 
 ## 🛠 Technologies Used
@@ -23,16 +27,23 @@ The Custom Knowledge Base Chatbot is an AI-powered chatbot that enables users to
 ## 📌 Future Enhancements
 
 ✅ Real-time Document Updates – Dynamically update the knowledge base.
+
 ✅ Multi-language Support – Translate and process documents in various languages.
+
 ✅ Voice Input/Output – Enable speech-based queries and responses.
+
 ✅ Offline Mode – Run chatbot locally without an internet connection.
 
 ## ⚡ Tech Stack
 
 🟢 LLMs from Groq
+
 🟢 LangChain – As a Framework for LLM
+
 🟢 LangSmith – For developing, testing, and monitoring LLM application
+
 🟢 Chainlit – For User Interface
+
 🟢 Python 3.10+ – Ensure compatibility for proper execution
 
 ## 🛠 System Requirements
