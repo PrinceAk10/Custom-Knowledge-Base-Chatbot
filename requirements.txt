@@ -3,3 +3,5 @@ langchain
 chainlit
 transformers
 SpeechRecognition
+pandaspython-docx
+os

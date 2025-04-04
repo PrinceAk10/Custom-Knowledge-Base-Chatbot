@@ -9,6 +9,9 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 import chainlit as cl
 from transformers import pipeline # text genration for auto completion
 import speech_recognition as sr
+import os
+import pandas as pd  # file processing
+from docx import Document
 
 # load the text_genration model
 # for auto completion
@@ -35,6 +38,19 @@ def analyse_emotion(text:str)-> tuple:
         return dominant_emotion['label'], dominant_emotion['score']
     except Exception as e:
         return "neutral", 0.0  # Default to neutral if there's an error
+
+
+# func to process file (csv)
+async def process_csv(file_path: str) -> str:
+    """Processes a CSV file and extracts its content."""
+    try:
+        df = pd.read_csv(file_path)
+        return df.to_string(index=False)  # Convert the DataFrame to a string
+    except Exception as e:
+        return f"Error processing CSV file: {e}"
+
+
+
     
 # speech recognition for user input
     
