@@ -10,6 +10,7 @@ import chainlit as cl
 from transformers import pipeline # text genration for auto completion
 import speech_recognition as sr
 import os
+import traceback
 import pandas as pd  # file processing
 from docx import Document
 
@@ -39,24 +40,42 @@ def analyse_emotion(text:str)-> tuple:
     except Exception as e:
         return "neutral", 0.0  # Default to neutral if there's an error
 
+# File processing functions
+SUPPORTED_FILE_TYPES = {"pdf": PyPDFLoader, "txt": TextLoader}
 
-# func to process file (csv)
-async def process_csv(file_path: str) -> str:
-    """Processes a CSV file and extracts its content."""
-    try:
-        df = pd.read_csv(file_path)
-        return df.to_string(index=False)  # Convert the DataFrame to a string
-    except Exception as e:
-        return f"Error processing CSV file: {e}"
+async def process_file(file_path: str) -> str:
+    """Processes an uploaded file and extracts text based on format."""
+    file_ext = file_path.split(".")[-1].lower()
 
-# func to process file (excel)
-async def process_excel(file_path: str) -> str:
-    """Processes an Excel file and extracts its content."""
+    if file_ext in ["csv", "xlsx"]:
+        return await process_tabular_file(file_path, file_ext)
+
+    if file_ext not in SUPPORTED_FILE_TYPES:
+        return "Unsupported file format. Please upload a PDF, TXT, CSV, or Excel file."
+
     try:
-        df = pd.read_excel(file_path)
-        return df.to_string(index=False)  # Convert the DataFrame to a string
+        loader = SUPPORTED_FILE_TYPES[file_ext](file_path)
+        pages = loader.load()
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        docs = text_splitter.split_documents(pages)
+        return "\n\n".join([doc.page_content for doc in docs])
     except Exception as e:
-        return f"Error processing Excel file: {e}"
+        return f"Error processing file: {str(e)}"
+
+# func to process tabular files(csv,excel)
+    
+async def process_tabular_file(file_path: str, file_type: str) -> str:
+    """Processes CSV and Excel files."""
+    try:
+        df = pd.read_csv(file_path) if file_type == "csv" else pd.read_excel(file_path)
+        return df.to_string(index=False)
+    except Exception as e:
+        return f"Error processing {file_type.upper()} file: {e}"
+
+
+
+
+
 
 # func to process file (word)
 
@@ -71,24 +90,7 @@ async def process_word(file_path: str) -> str:
 
 # func to process files based on their extensions
 
-async def process_file(file_path: str) -> str:
-    """Processes an uploaded file and extracts its content."""
-    file_extension = os.path.splitext(file_path)[1].lower()
 
-    if file_extension == ".pdf":
-        loader = PyPDFLoader(file_path)
-        pages = loader.load()
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-        docs = text_splitter.split_documents(pages)
-        return "\n\n".join([doc.page_content for doc in docs])
-    elif file_extension == ".csv":
-        return await process_csv(file_path)
-    elif file_extension in [".xls", ".xlsx"]:
-        return await process_excel(file_path)
-    elif file_extension in [".doc", ".docx"]:
-        return await process_word(file_path)
-    else:
-        return "Unsupported file type. Please upload a PDF, CSV, Excel, or Word file." 
 
 
 # speech recognition for user input
@@ -172,11 +174,3 @@ if user_query:
 
     await msg.send()
 
-async def process_file(file_path: str) -> str:
-    """Processes an uploaded PDF file and extracts text."""
-    loader = PyPDFLoader(file_path)
-    pages = loader.load()
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    docs = text_splitter.split_documents(pages)
-    extracted_text = "\n\n".join([doc.page_content for doc in docs])
-    return extracted_text
