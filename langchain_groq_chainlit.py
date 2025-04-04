@@ -36,35 +36,56 @@ def analyse_emotion(text: str) -> tuple:
     except Exception as e:
         return "neutral", 0.0  # Default to neutral if there's an error
 
-# File processing functions
-SUPPORTED_FILE_TYPES = {"pdf": PyPDFLoader, "txt": TextLoader}
+# func to process file (csv)
+async def process_csv(file_path: str) -> str:
+    """Processes a CSV file and extracts its content."""
+    try:
+        df = pd.read_csv(file_path)
+        return df.to_string(index=False)  # Convert the DataFrame to a string
+    except Exception as e:
+        return f"Error processing CSV file: {e}"
+
+# func to process file (excel)
+async def process_excel(file_path: str) -> str:
+    """Processes an Excel file and extracts its content."""
+    try:
+        df = pd.read_excel(file_path)
+        return df.to_string(index=False)  # Convert the DataFrame to a string
+    except Exception as e:
+        return f"Error processing Excel file: {e}"
+
+# func to process file (word)
+async def process_word(file_path: str) -> str:
+    """Processes a Word document and extracts its content."""
+    try:
+        doc = Document(file_path)
+        if not doc.paragraphs:
+            return "The Word document is empty."
+        content = "\n".join([paragraph.text for paragraph in doc.paragraphs if paragraph.text.strip()])
+        return content if content else "The Word document contains no readable text."
+    except Exception as e:
+        return f"Error processing Word file: {e}"
+
+# func to process file based on the extension
 
 async def process_file(file_path: str) -> str:
-    """Processes an uploaded file and extracts text based on format."""
-    file_ext = file_path.split(".")[-1].lower()
+    """Processes an uploaded file and extracts its content."""
+    file_extension = os.path.splitext(file_path)[1].lower()
 
-    if file_ext in ["csv", "xlsx"]:
-        return await process_tabular_file(file_path, file_ext)
-
-    if file_ext not in SUPPORTED_FILE_TYPES:
-        return "Unsupported file format. Please upload a PDF, TXT, CSV, or Excel file."
-
-    try:
-        loader = SUPPORTED_FILE_TYPES[file_ext](file_path)
+    if file_extension == ".pdf":
+        loader = PyPDFLoader(file_path)
         pages = loader.load()
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
         docs = text_splitter.split_documents(pages)
         return "\n\n".join([doc.page_content for doc in docs])
-    except Exception as e:
-        return f"Error processing file: {str(e)}"
-
-async def process_tabular_file(file_path: str, file_type: str) -> str:
-    """Processes CSV and Excel files."""
-    try:
-        df = pd.read_csv(file_path) if file_type == "csv" else pd.read_excel(file_path)
-        return df.to_string(index=False)
-    except Exception as e:
-        return f"Error processing {file_type.upper()} file: {e}"
+    elif file_extension == ".csv":
+        return await process_csv(file_path)
+    elif file_extension in [".xls", ".xlsx"]:
+        return await process_excel(file_path)
+    elif file_extension in [".doc", ".docx"]:
+        return await process_word(file_path)
+    else:
+        return "Unsupported file type. Please upload a PDF, CSV, Excel, or Word (.docx) file."
 
 # Speech recognition for user input
 async def process_voice_input():
