@@ -117,36 +117,14 @@ async def on_chat_start():
     ])
     cl.user_session.set("runnable", prompt | model | StrOutputParser())
 
-@cl.on_chat_start
-async def on_chat_start():
-    # Sending an image with the local file path
-    elements = [
-        cl.Image(name="image1", display="inline", path="chat.png")
-    ]
-    await cl.Message(content="Hello there, I am Chatbot. You can ask me anything, upload a file for analysis, or click the button below to use voice input.", elements=elements).send()
-
-    # Add a button for speech recognition
-    await cl.Message(content="Click the button below to start voice input:").send()
-    await cl.Action(name="Start Voice Input", value="record_voice").send()
-
-    model = ChatGroq(temperature=0, model_name="mixtral-8x7b-32768")
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", "You're a very knowledgeable Machine Learning Engineer."),
-        ("human", "{question}")
-    ])
-    runnable = prompt | model | StrOutputParser()
-    cl.user_session.set("runnable", runnable)
-
 @cl.on_message
 async def on_message(message: cl.Message):
+    runnable = cl.user_session.get("runnable")  # type: Runnable
+    msg = cl.Message(content="")
     user_query = message.content
+    file_text = ""
 
-    # Check if the user clicked the "Start Voice Input" button
-    if message.action == "record_voice":
-        await process_voice_input()
-        return
-
-    # Speech recognition if the user types "record voice"
+    # Check if user wants to record voice
     if user_query.lower() == "record voice":
         await process_voice_input()
         return
@@ -159,23 +137,15 @@ async def on_message(message: cl.Message):
 
     combined_input = f"User Query: {user_query}\n\nFile Content:\n{file_text}" if file_text else user_query
 
-    # Auto-completion for user query
+    # Generate auto-completion for user query
     if user_query:
         auto_completion = generate_auto_completion(user_query)
         await cl.Message(content=f"Auto-completion: {auto_completion}").send()
 
-    # Emotion detection for user query
+    # Perform emotion analysis on user query
     if user_query:
         emotion, emotion_score = analyse_emotion(user_query)
         await cl.Message(content=f"Emotion: {emotion} (Score: {emotion_score:.2f})").send()
-
-    # Streaming the chatbot response
-    runnable = cl.user_session.get("runnable")  # type: Runnable
-    async for chunk in runnable.astream(
-        {"question": combined_input},
-        config=RunnableConfig(callbacks=[cl.LangchainCallbackHandler()]),
-    ):
-        await cl.Message(content=chunk).send()
 
     # Streaming chatbot response
     try:
