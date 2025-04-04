@@ -58,6 +58,17 @@ async def process_excel(file_path: str) -> str:
     except Exception as e:
         return f"Error processing Excel file: {e}"
 
+# func to process file (word)
+
+async def process_word(file_path: str) -> str:
+    """Processes a Word document and extracts its content."""
+    try:
+        doc = Document(file_path)
+        content = "\n".join([paragraph.text for paragraph in doc.paragraphs])
+        return content
+    except Exception as e:
+        return f"Error processing Word file: {e}"
+
     
 # speech recognition for user input
     
