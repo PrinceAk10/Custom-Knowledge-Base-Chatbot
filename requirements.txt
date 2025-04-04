@@ -5,3 +5,4 @@ transformers
 SpeechRecognition
 pandaspython-docx
 os
+openpyxl
