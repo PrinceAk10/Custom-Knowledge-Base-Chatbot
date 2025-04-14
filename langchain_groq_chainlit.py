@@ -8,13 +8,15 @@ load_dotenv()
 # Get API keys
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+LANGCHAIN_API_KEY = os.getenv("LANGCHAIN_API_KEY")
 
-if not GROQ_API_KEY and not OPENAI_API_KEY:
-    raise ValueError("Please set at least one of GROQ_API_KEY or OPENAI_API_KEY in your .env file.")
+if not GROQ_API_KEY and not OPENAI_API_KEY and not LANGCHAIN_API_KEY:
+    raise ValueError("Please set at least one of GROQ_API_KEY, OPENAI_API_KEY, or LANGCHAIN_API_KEY in your .env file.")
 
 # --- Imports ---
 from langchain_groq import ChatGroq
 from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatAnthropic
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.schema import StrOutputParser
 from langchain.schema.runnable import Runnable
@@ -110,12 +112,14 @@ async def on_chat_start():
     elements = [cl.Image(name="image1", display="inline", path="chat.png")]
     await cl.Message(content="Hello! I am Chatbot. Ask me anything or upload a file.", elements=elements).send()
 
-    backend = "groq"  # Change to "openai" to use OpenAI instead
+    backend = os.getenv("LANGCHAIN_BACKEND", "groq").lower()
 
     if backend == "groq":
-        model = ChatGroq(temperature=0, model_name="llama3-70b-8192")
+        model = ChatGroq(temperature=0, model_name="llama3-70b-8192", groq_api_key=GROQ_API_KEY)
     elif backend == "openai":
         model = ChatOpenAI(temperature=0, model_name="gpt-4", openai_api_key=OPENAI_API_KEY)
+    elif backend == "langchain":
+        model = ChatAnthropic(temperature=0, model_name="claude-3-opus-20240229", api_key=LANGCHAIN_API_KEY)
     else:
         raise ValueError("Unsupported backend selected.")
 
