@@ -1,22 +1,33 @@
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
-from langchain.schema import StrOutputParser
+from langchain.ouput_parsers import StrOutputParser
 from langchain.schema.runnable import Runnable
 from langchain.schema.runnable.config import RunnableConfig
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-
 import chainlit as cl
 from transformers import pipeline # text genration for auto completion
 import speech_recognition as sr
 import os
 import pandas as pd  # file processing
 from docx import Document
+import logging # to audit the user activity and for effective debugging
+
+# configuring the logging
+logging.basicConfig(
+     level=logging.INFO,
+     format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+# chainlit config for handle large file
+cl.server.set_max_upload_size(50) # for file size
+cl.server.set_max_message_size(60) # for msg size
 
 # load the text_genration model
 # for auto completion
 
 text_generator = pipeline("text-generation", model="gpt2")
+emotion_detector=pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", return_all_scores=True)
 
 def generate_auto_completion(prompt: str) -> str:
     """Generates auto-completion for the given prompt."""
@@ -25,18 +36,20 @@ def generate_auto_completion(prompt: str) -> str:
         completion = text_generator(prompt, max_length=50, num_return_sequences=1)[0]['generated_text']
         return completion
     except Exception as e:
+        logging.error(f"Error in generating auto-completion: {e}")
         return f"Error generating auto-completion: {e}"
 
 # load the emotion detection model
-emotion_detector=pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", return_all_scores=True)
+
 def analyse_emotion(text:str)-> tuple:
-      """Analyzes the emotion of the given text."""
+    """Analyzes the emotion of the given text."""
     try:
         emotions = emotion_detector(text)[0]  # Get emotion scores
         # Find the emotion with the highest score
         dominant_emotion = max(emotions, key=lambda x: x['score'])
         return dominant_emotion['label'], dominant_emotion['score']
     except Exception as e:
+        logging.warning(f" Error in emotion analysis: {e}")
         return "neutral", 0.0  # Default to neutral if there's an error
 
 
@@ -47,6 +60,7 @@ async def process_csv(file_path: str) -> str:
         df = pd.read_csv(file_path)
         return df.to_string(index=False)  # Convert the DataFrame to a string
     except Exception as e:
+        logging.error(f"Error in processing CSV file: {e}")
         return f"Error processing CSV file: {e}"
 
 # func to process file (excel)
@@ -56,6 +70,7 @@ async def process_excel(file_path: str) -> str:
         df = pd.read_excel(file_path)
         return df.to_string(index=False)  # Convert the DataFrame to a string
     except Exception as e:
+        logging.error(f"Error in processing Excel file: {e}")
         return f"Error processing Excel file: {e}"
     
 # func to process file (word)
@@ -68,6 +83,7 @@ async def process_word(file_path: str) -> str:
         content = "\n".join([paragraph.text for paragraph in doc.paragraphs if paragraph.text.strip()])
         return content if content else "The Word document contains no readable text."
     except Exception as e:
+        logging.error(f"Error in processing Word file: {e}")
         return f"Error processing Word file: {e}"
 
 # func to process file based on the extension
@@ -75,7 +91,7 @@ async def process_word(file_path: str) -> str:
 async def process_file(file_path: str) -> str:
     """Processes an uploaded file and extracts its content."""
     file_extension = os.path.splitext(file_path)[1].lower()
-
+    logging.info(f"Processing file: {file_path} with extension: {file_extension}")
     if file_extension == ".pdf":
         loader = PyPDFLoader(file_path)
         pages = loader.load()
@@ -99,11 +115,12 @@ async def process_voice_input():
     r = sr.Recognizer()
     try:
         with sr.Microphone() as source:
-            await cl.Message(content="Listening...").send()
-            audio = r.listen(source)
+            await cl.Message(content="Listening...(10s)").send()
+            r.adjust_for_ambient_noise(source,duration=0.5)
+            audio = r.listen(source,timeout=10)
             user_query = r.recognize_google(audio)
             await cl.Message(content=f"You said: {user_query}").send()
-
+            
             # Process the voice input as a normal query
             await on_message(cl.Message(content=user_query))
     except sr.UnknownValueError:
@@ -111,7 +128,8 @@ async def process_voice_input():
     except sr.RequestError:
             await cl.Message(content="There was an issue with the speech recognition service. Please try again later.").send()
     except Exception as e:
-         await cl.message (content=f"error occured while processing for voice input:{e}").send()        
+         logging.error(f"Error in processing voice input: {e}")
+         await cl.Message (content=f"error occured while processing for voice input:{e}").send()        
     
 
 
@@ -122,8 +140,12 @@ async def on_chat_start():
     elements = [
         cl.Image(name="image1", display="inline", path="chat.png")
     ]
-    await cl.Message(content="Hello there, I am Chatbot. You can ask me anything or upload a file for analysis.", elements=elements).send()
-
+    actions=[cl.Action(name="Record Voice",value="voice_input",label="Record voice",icon="microphone")]
+    await cl.Message(content="Hello there, I am Chatbot. You can ask me anything or upload a file for analysis.",
+                    elements=elements,
+                    actions=actions
+    ).send()
+    
     model = ChatGroq(temperature=0, model_name="mixtral-8x7b-32768")
     prompt = ChatPromptTemplate.from_messages([
         ("system", "You're a very knowledgeable Machine Learning Engineer."),
@@ -132,14 +154,22 @@ async def on_chat_start():
     runnable = prompt | model | StrOutputParser()
     cl.user_session.set("runnable", runnable)
 
+@cl.on_action
+async def on_action(action:cl.Action):
+    if action.value == "voice_input":
+        await process_voice_input()
+
 @cl.on_message
 async def on_message(message: cl.Message):
-    user_query = message.content
+    runnable=cl.user_session.get("runnable")
+    user_query = message.content.strip()
     msg = cl.Message(content="")
+    file_text=''
+    MAX_FILE_SIZE=50 * 1024 * 1024  
 
    
 
-# speech recognition if user want to record the audio
+    # speech recognition if user want to record the audio
     if user_query.lower() == "record voice":
         await process_voice_input()
         return
@@ -150,35 +180,28 @@ async def on_message(message: cl.Message):
     if message.elements:
         for element in message.elements:
             if isinstance(element, cl.File):
+                if element.size>MAX_FILE_SIZE:
+                    await cl.Message(content='File size exceeds the limit of 50 MB').send()
+                    return
                 file_text = await process_file(element.path)
     
     combined_input = f"User Query: {user_query}\n\nFile Content:\n{file_text}" if file_text else user_query
 
-# auto completion for user query
-if user_query:
-    auto_completion= generate_auto_completion(user_query)
-    await cl.message(content=f"auto-completion:{auto_completion}").send() 
-
-# emotion detection for user query
-if user_query:
-    emotion,emotion_score=analyse_emotion(user_query)
-    await cl.message(content=f"Emotion:{emotion}(Score:{emotion_score:.2f})").send()
-
-# streaing the chatbot response 
-
-    async for chunk in runnable.astream(
-        {"question": combined_input},
-        config=RunnableConfig(callbacks=[cl.LangchainCallbackHandler()]),
-    ):
-        await msg.stream_token(chunk)
-
+# Auto completion and Emotion ana;ysis
+    if user_query:
+       auto_completion= generate_auto_completion(user_query)
+       await cl.Message(content=f"auto-completion:{auto_completion}").send() 
+       emotion,score=analyse_emotion(user_query)
+       await cl.Message(content=f"Emotion:{emotion}(Score:{score:.2f})").send()
+    try:
+        async for chunk in runnable.astream(
+            {"question": combined_input},
+            config=RunnableConfig(callbacks=[cl.LangchainCallbackHandler()]),
+        ):
+            await msg.stream_token(chunk)
+    except Exception as e:
+        logging.error(f"LLM streaming error: {e}")
+        msg.content=f"error: {e}"
     await msg.send()
 
-async def process_file(file_path: str) -> str:
-    """Processes an uploaded PDF file and extracts text."""
-    loader = PyPDFLoader(file_path)
-    pages = loader.load()
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    docs = text_splitter.split_documents(pages)
-    extracted_text = "\n\n".join([doc.page_content for doc in docs])
-    return extracted_text
+
