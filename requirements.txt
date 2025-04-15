@@ -1,7 +1,13 @@
 langchain-groq
 langchain
+langchain-community
+langchain-openai
+langchain-anthropic
 chainlit
 transformers
 SpeechRecognition
-pandaspython-docx
-os
+pandas
+python-docx
+langchain-core>=0.2.1 
+langchain-community>=0.0.29 
+langchain-cli>=0.0.12
