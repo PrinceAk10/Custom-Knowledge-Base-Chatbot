@@ -1,4 +1,6 @@
-# Custom Knowledge Base Chatbot
+# Custom Knowledge Base Chatbot ![static Badge](https://img.shields.io/badge/llm-yellow) ![static Badge](https://img.shields.io/badge/langchain-red) ![static Badge](https://img.shields.io/badge/OpenAI-white) ![static Badge](https://img.shields.io/badge/Groq-_API-blue) ![Static Badge](https://img.shields.io/badge/Chainlit-orange) ![Static Badge](https://img.shields.io/badge/Hugging_-Face-yellow) ![Static Badge](https://img.shields.io/badge/chat_-bot-greywhite)
+
+
 
 ## 🚀 Project Objective
 
@@ -62,12 +64,20 @@ The Custom Knowledge Base Chatbot is an AI-powered chatbot that enables users to
 
 ## 1️⃣ Clone the Repository
 
-git clone git@github.com:PrinceAk10/Custom-Knowledge-Base-Chatbot.git
+```bash
+git clone https://github.com/mariyaviswa/Workcohol_Intern_Project.git
 cd langchain-groq-chainlit
+```
 
 ## 2️⃣ Create a Virtual Environment & Activate It
-
-python3 -m venv .venv && source .venv/bin/activate
+#### Create
+```bash
+python -m venv .venv
+```
+#### Activate
+```bash
+.\.venv\Scripts\activate
+```
 
 ## 3️⃣ Set Up Environment Variables (Optional but Recommended)
 
@@ -79,6 +89,7 @@ cp example.env .env
 
 ## Add the following details in your .env file:
 
+```bash
 LANGCHAIN_TRACING_V2=true
 
 LANGCHAIN_ENDPOINT="https://api.smith.langchain.com"
@@ -88,15 +99,19 @@ LANGCHAIN_API_KEY="your-api-key"
 LANGCHAIN_PROJECT="your-project"
 
 GROQ_API_KEY="YOUR_GROQ_API_KEY"
+```
 
 ## 4️⃣ Install Dependencies
 
+```bash
 pip install -r requirements.txt
+```
 
 ## 5️⃣ Run the Chatbot UI
 
+```bash
 chainlit run langchain_groq_chainlit.py
-
+```
 ## 👥 Collaborators
 
 👨‍💻 Akshay Abhay Kullu – Team Lead
