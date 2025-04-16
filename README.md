@@ -130,4 +130,7 @@ chainlit run langchain_groq_chainlit.py
 
 ![Screenshot 2025-04-16 202129](https://github.com/user-attachments/assets/fdeb15d7-1b70-44ac-987d-8067a30e5333)
 
+![Screenshot 2025-04-16 202220](https://github.com/user-attachments/assets/ab32987d-27bc-4717-970f-e7fd7641929a)
+
+
 
