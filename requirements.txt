@@ -1,8 +1,11 @@
-langchain-groq
-langchain
-chainlit
-transformers
+transformers 
+pandas 
+pypdf
+python-dotenv 
+chainlit 
+langchain 
+langchain-groq 
+langchain-openai 
+python-docx 
 SpeechRecognition
-pandaspython-docx
-os
 openpyxl
