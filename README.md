@@ -121,3 +121,13 @@ chainlit run langchain_groq_chainlit.py
 👨‍💻 Sam Thanga Daniel
 
 👨‍💻 Mariya Viswa
+
+# User Interface
+
+![Screenshot 2025-04-16 201803](https://github.com/user-attachments/assets/f7aa9329-d856-417a-adf5-1e13d6533808)
+
+![Screenshot 2025-04-16 201931](https://github.com/user-attachments/assets/7de79614-45ec-424e-9d35-3873bdb8c2c3)
+
+![Screenshot 2025-04-16 202129](https://github.com/user-attachments/assets/fdeb15d7-1b70-44ac-987d-8067a30e5333)
+
+
